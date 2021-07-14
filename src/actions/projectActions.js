@@ -33,6 +33,7 @@ export const getProjectById = (id, history) => async (dispatch) => {
       payload: res.data,
     });
   } catch (error) {
+    console.log("error");
     history.push("/dashboard");
   }
 };

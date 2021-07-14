@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import classnames from "classnames";
 import { addProjectTask } from "../../../actions/backlogActions";
+import { getProjectById } from "../../../actions/projectActions";
 
 class AddProjectTask extends Component {
   constructor(props) {
@@ -22,6 +23,11 @@ class AddProjectTask extends Component {
 
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+  }
+
+  componentDidMount() {
+    const { id } = this.props.match.params;
+    this.props.getProjectById(id, this.props.history);
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -64,7 +70,9 @@ class AddProjectTask extends Component {
                 Back to Project Board
               </Link>
               <h4 className="display-4 text-center">Add Project Task</h4>
-              <p className="lead text-center">Project Name + Project Code</p>
+              <p className="lead text-center">
+                Project Name: {this.props.project.project.projectName}
+              </p>
               <form onSubmit={this.onSubmit}>
                 <div className="form-group">
                   <input
@@ -143,11 +151,16 @@ class AddProjectTask extends Component {
 
 AddProjectTask.propTypes = {
   addProjectTask: PropTypes.func.isRequired,
+  getProjectById: PropTypes.func.isRequired,
   errors: PropTypes.object.isRequired,
+  project: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   errors: state.errors,
+  project: state.project,
 });
 
-export default connect(mapStateToProps, { addProjectTask })(AddProjectTask);
+export default connect(mapStateToProps, { addProjectTask, getProjectById })(
+  AddProjectTask
+);
