@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import classnames from "classnames";
+import { PSClickWrap } from "@pactsafe/pactsafe-react-sdk";
 import { createNewUser } from "../../actions/securityActions";
 
 class Register extends Component {
@@ -14,10 +15,13 @@ class Register extends Component {
       password: "",
       confirmPassword: "",
       errors: {},
+      hasAgreed: false,
     };
 
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.onValid = this.onValid.bind(this);
+    this.onInvalid = this.onInvalid.bind(this);
   }
 
   componentDidMount() {
@@ -47,8 +51,22 @@ class Register extends Component {
 
     this.props.createNewUser(newUser, this.props.history);
   }
+
+  onValid() {
+    this.setState({...this.state, hasAgreed: true});
+    console.log('Agreed');
+  }
+
+  onInvalid() {
+    this.setState({...this.state, hasAgreed: false});
+    console.log('Disagreed');
+  }
+
   render() {
     const { errors } = this.state;
+    const AccessID = 'de555c65-f4f5-4e33-873d-87065c9be076';
+    const GroupKey = 'group-syiu6bdbq';
+    console.log(AccessID);
     return (
       <div className="register">
         <div className="container">
@@ -79,6 +97,7 @@ class Register extends Component {
                       "is-invalid": errors.username,
                     })}
                     placeholder="Email Address"
+                    id="userEmail"
                     name="username"
                     value={this.state.username}
                     onChange={this.onChange}
@@ -119,7 +138,8 @@ class Register extends Component {
                     </div>
                   )}
                 </div>
-                <input type="submit" className="btn btn-info btn-block mt-4" />
+                <PSClickWrap accessId={AccessID} groupKey={GroupKey} signerIdSelector="userEmail" onValid={this.onValid} onInvalid={this.onInvalid}/>
+                <input type="submit" disabled={!this.state.hasAgreed} className="btn btn-info btn-block mt-4" />
               </form>
             </div>
           </div>
